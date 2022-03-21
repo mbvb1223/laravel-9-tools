@@ -21,8 +21,12 @@ class PhotoController extends Controller
         var_dump($users->toArray());
 
 //        dispatch(ProcessPodcast::class);
-        for ($i = 0; $i < 1000; $i++) {
-            dispatch((new ProcessPodcast)->onQueue('khien'));
+        for ($i = 0; $i < 50; $i++) {
+            dispatch((new ProcessPodcast('default--' . $i))->onQueue('default'));
+        }
+
+        for ($i = 0; $i < 30; $i++) {
+            dispatch((new ProcessPodcast('high--' . $i))->onQueue('high'));
         }
 
 

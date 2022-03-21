@@ -13,14 +13,16 @@ class ProcessPodcast implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    private $i;
+
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($i)
     {
-        //
+        $this->i = $i;
     }
 
     /**
@@ -30,6 +32,7 @@ class ProcessPodcast implements ShouldQueue
      */
     public function handle()
     {
-        echo "1";
+        echo $this->i . "____";
+        sleep(5);
     }
 }
