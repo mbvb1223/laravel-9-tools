@@ -1,1 +1,2 @@
 ./vendor/bin/sail up
+docker exec -it laravel-9-tools_laravel.test_1 bash
