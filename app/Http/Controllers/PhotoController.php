@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\ProcessPodcast;
 use App\Models\Photo;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class PhotoController extends Controller
@@ -14,6 +16,20 @@ class PhotoController extends Controller
      */
     public function index()
     {
+        $users = User::all();
+
+        var_dump($users->toArray());
+
+//        dispatch(ProcessPodcast::class);
+        for ($i = 0; $i < 50; $i++) {
+            dispatch((new ProcessPodcast('default--' . $i))->onQueue('default'));
+        }
+
+        for ($i = 0; $i < 30; $i++) {
+            dispatch((new ProcessPodcast('high--' . $i))->onQueue('high'));
+        }
+
+
         return '12321';
     }
 
