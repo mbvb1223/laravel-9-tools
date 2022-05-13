@@ -2,100 +2,58 @@
 
 namespace App\Http\Controllers;
 
+use Anik\Amqp\ConsumableMessage;
+use Anik\Amqp\ProducibleMessage;
+use Anik\Laravel\Amqp\Facades\Amqp;
 use App\Jobs\ProcessPodcast;
 use App\Models\Photo;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class PhotoController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
-        $users = User::all();
+//        $users = User::all();
+//
+//        var_dump($users->toArray());
+//
+////        dispatch(ProcessPodcast::class);
+//        for ($i = 0; $i < 50; $i++) {
+//            dispatch((new ProcessPodcast('default--' . $i))->onQueue('default'));
+//        }
+//
+//        for ($i = 0; $i < 30; $i++) {
+//            dispatch((new ProcessPodcast('high--' . $i))->onQueue('high'));
+//        }
 
-        var_dump($users->toArray());
-
-//        dispatch(ProcessPodcast::class);
-        for ($i = 0; $i < 50; $i++) {
-            dispatch((new ProcessPodcast('default--' . $i))->onQueue('default'));
-        }
-
-        for ($i = 0; $i < 30; $i++) {
-            dispatch((new ProcessPodcast('high--' . $i))->onQueue('high'));
-        }
 
 
         return '12321';
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function produce()
     {
-        //
+        for ($i = 0; $i < 5; $i++) {
+//            $messages = ['my first message', 'my second message'];
+            $messages = new ProducibleMessage('my message');
+            Amqp::publish($messages); // publishes to default connection
+//            Amqp::connection('rabbitmq')->publish($messages);
+//
+//            app('amqp')->publish($messages); // publishes to default connection
+//            app('amqp')->connection('rabbitmq')->publish($messages); // publishes to rabbitmq connection
+        }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+    public function consume(Request $request)
     {
-        //
+        Amqp::connection('rabbitmq')->consume(function(ConsumableMessage $message) {
+            var_dump($message->getMessageBody());
+            $message->ack();
+        }, '', 'amq.topic', 'laravel-amqp'); // consumes from rabbitmq connection
+
+        die('asdf');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Photo  $photo
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Photo $photo)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Photo  $photo
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Photo $photo)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Photo  $photo
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Photo $photo)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Photo  $photo
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Photo $photo)
-    {
-        //
-    }
 }

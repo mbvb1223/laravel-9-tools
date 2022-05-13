@@ -19,3 +19,5 @@ Route::get('/', function () {
 });
 
 Route::get('photos', [PhotoController::class, 'index']);
+Route::get('photos/produce', [PhotoController::class, 'produce']);
+Route::get('photos/consume', [PhotoController::class, 'consume']);
